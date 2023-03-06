@@ -71,8 +71,9 @@ async function startEc2Instance(label, githubRegistrationToken) {
   // We don't want userdata/runner to be started. Our image has already a runner service started
   const userData = buildUserDataScript(githubRegistrationToken, label, true);
 
+  var params;
   if (userData.length === 0) {
-    const params = {
+    params = {
       ImageId: config.input.ec2ImageId,
       InstanceType: config.input.ec2InstanceType,
       MinCount: 1,
@@ -83,7 +84,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
       TagSpecifications: config.tagSpecifications,
     };
   } else {
-    const params = {
+    params = {
       ImageId: config.input.ec2ImageId,
       InstanceType: config.input.ec2InstanceType,
       MinCount: 1,
