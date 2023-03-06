@@ -70,6 +70,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
 
   // We don't want userdata/runner to be started. Our image has already a runner service started
   const userData = buildUserDataScript(githubRegistrationToken, label, true);
+  core.info('startEc2Instance called')
 
   var params;
   if (userData.length === 0) {
@@ -97,7 +98,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
     };
   }
 
-
+  core.info('b4 calling runInstances');
   try {
     const result = await ec2.runInstances(params).promise();
     const ec2InstanceId = result.Instances[0].InstanceId;
