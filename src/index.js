@@ -9,11 +9,12 @@ function setOutput(label, ec2InstanceId) {
 }
 
 async function start() {
+  var label;
   if (config.input.label) {
     // label has been provided for start so a runner should be running natively on the image as a service
-    const label = config.input.label;
+    label = config.input.label;
   } else {
-    const label = config.generateUniqueLabel();
+    label = config.generateUniqueLabel();
   }
 
   const githubRegistrationToken = await gh.getRegistrationToken();
