@@ -157,7 +157,7 @@ Use the following steps to prepare your workflow for running on your EC2 self-ho
 
    For Amazon Linux 2, it looks like the following:
 
-   ```
+   ```.shell
     sudo yum update -y && \
     sudo yum install docker -y && \
     sudo yum install git -y && \
@@ -165,6 +165,22 @@ Use the following steps to prepare your workflow for running on your EC2 self-ho
    ```
 
    For other Linux distributions, it could be slightly different.
+
+   For a Windows server instance, it looks like the following:
+
+   Note: This must be done over RDP since `choco install git` doesn't seem to install correctly over a session manager
+   connection
+
+   ```.ps1
+   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+   choco install git
+   
+   # Remove existing user data run once file (this is so that the user-data being set on instance start actually runs).
+   rm C:\ProgramData\Amazon\EC2Launch\state\.run-once
+   ```
+   Note: The `.run-once` file needs to be deleted with every start of the instance you are snapshotting.
+   If you stop and reboot the instance a few times please make sure you delete the `.run-once` file before creating the 
+   AMI.
 
 3. Install any other tools required for your workflow.
 4. Create a new EC2 image (AMI) from the instance.
@@ -190,11 +206,12 @@ Now you're ready to go!
 ### Inputs
 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Required                                   | Description                                                                                                                                                                                                                                                                                                                           |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `mode`                                                                                                                                                                       | Always required.                           | Specify here which mode you want to use: <br> - `start` - to start a new runner; <br> - `stop` - to stop the previously created runner.                                                                                                                                                                                               |
 | `github-token`                                                                                                                                                               | Always required.                           | GitHub Personal Access Token with the `repo` scope assigned.                                                                                                                                                                                                                                                                          |
 | `ec2-image-id`                                                                                                                                                               | Required if you use the `start` mode.      | EC2 Image Id (AMI). <br><br> The new runner will be launched from this image. <br><br> The action is compatible with Amazon Linux 2 images.                                                                                                                                                                                           |
 | `ec2-instance-type`                                                                                                                                                          | Required if you use the `start` mode.      | EC2 Instance Type.                                                                                                                                                                                                                                                                                                                    |
+| `ec2-os`                                                                                                                                                                     | Optional. Used only with the `start` mode. | Base OS type of the EC2 image (AMI). This defaults to Linux. The new runner needs to be configured based on OS: <br> - `windows` <br> - `linux`                                                                                                                                                                          |
 | `subnet-id`                                                                                                                                                                  | Required if you use the `start` mode.      | VPC Subnet Id. <br><br> The subnet should belong to the same VPC as the specified security group.                                                                                                                                                                                                                                     |
 | `security-group-id`                                                                                                                                                          | Required if you use the `start` mode.      | EC2 Security Group Id. <br><br> The security group should belong to the same VPC as the specified subnet. <br><br> Only the outbound traffic for port 443 should be allowed. No inbound traffic is required.                                                                                                                          |
 | `label`                                                                                                                                                                      | Required if you use the `stop` mode.       | Name of the unique label assigned to the runner. <br><br> The label is provided by the output of the action in the `start` mode. <br><br> The label is used to remove the runner from GitHub when the runner is not needed anymore.                                                                                                   |

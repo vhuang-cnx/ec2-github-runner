@@ -12,6 +12,7 @@ class Config {
       securityGroupId: core.getInput('security-group-id'),
       label: core.getInput('label'),
       ec2InstanceId: core.getInput('ec2-instance-id'),
+      ec2Os: core.getInput('ec2-os'),      
       iamRoleName: core.getInput('iam-role-name'),
       runnerHomeDir: core.getInput('runner-home-dir'),
     };
@@ -43,8 +44,11 @@ class Config {
     }
 
     if (this.input.mode === 'start') {
-      if (!this.input.ec2ImageId || !this.input.ec2InstanceType || !this.input.subnetId || !this.input.securityGroupId) {
+      if (!this.input.ec2ImageId || !this.input.ec2InstanceType || !this.input.ec2Os || !this.input.subnetId || !this.input.securityGroupId) {
         throw new Error(`Not all the required inputs are provided for the 'start' mode`);
+      }
+      if (this.input.ec2Os !== 'windows' && this.input.ec2Os !== 'linux') {
+        throw new Error(`Wrong ec2-os. Allowed values: windows or linux.`);
       }
     } else if (this.input.mode === 'stop') {
       if (!this.input.label || !this.input.ec2InstanceId) {
