@@ -74,6 +74,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
 
   var params;
   if (userData.length === 0) {
+    core.info('No UserData')
     params = {
       ImageId: config.input.ec2ImageId,
       InstanceType: config.input.ec2InstanceType,
