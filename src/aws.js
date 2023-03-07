@@ -13,10 +13,10 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
       if (config.input.eniId) {
         return [
           '<powershell>',
-          'whoami > c:\Users\test.txt',
+          'whoami > c:\\Users\\test.txt',
           `$instanceId = (invoke-webrequest http://169.254.169.254/latest/meta-data/instance-id -UseBasicParsing).content`,
           `$result = aws ec2 attach-network-interface --network-interface-id ${config.input.eniId} --instance-id $instanceId --device-index 1 | ConvertFrom-Json`,
-          'echo $result.AttachmentId >> c:\Users\test.txt',
+          'echo $result.AttachmentId >> c:\\Users\\test.txt',
           '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "User")',
           '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "Machine")',
           '</powershell>',
