@@ -32,6 +32,10 @@ inputs:
          - 'linux'
      required: false
      default: linux    
+  eni-id:
+     description: >-
+       Additional eni needs to be attached to the instance
+     required: false
   subnet-id:
     description: >-
       VPC Subnet Id. The subnet should belong to the same VPC as the specified security group.

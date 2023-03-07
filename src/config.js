@@ -13,6 +13,7 @@ class Config {
       label: core.getInput('label'),
       ec2InstanceId: core.getInput('ec2-instance-id'),
       ec2Os: core.getInput('ec2-os'),      
+      eniId: core.getInput('eni-id'),
       iamRoleName: core.getInput('iam-role-name'),
       runnerHomeDir: core.getInput('runner-home-dir'),
     };

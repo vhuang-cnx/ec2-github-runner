@@ -8,8 +8,25 @@ const runnerVersion = '2.3.3.1'
 function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
   core.info(`Building user data script for ${config.input.ec2Os}`)
   if (noRunner) {
-    core.info(`Does not require userdata to start runner.`)
-    return []
+    core.info(`Does not require to start runner.`);
+    if (config.input.ec2Os === 'windows') {
+      if (config.input.eniId) {
+        return [
+          '<powershell>',
+          'whoami > c:\Users\test.txt',
+          `$instanceId = (invoke-webrequest http://169.254.169.254/latest/meta-data/instance-id -UseBasicParsing).content`,
+          `$result = aws ec2 attach-network-interface --network-interface-id ${config.input.eniId} --instance-id $instanceId --device-index 1 | ConvertFrom-Json`,
+          'echo $result.AttachmentId >> c:\Users\test.txt',
+          '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "User")',
+          '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "Machine")',
+          '</powershell>',
+          '<persist>true</persist>'
+        ]
+      } 
+    }
+    // If here, we are either linux or windows with no ENI needs to be attached.
+    core.info(`Does not require any UserData.`);
+    return [];
   }
 
   if (config.input.ec2Os === 'windows') {
@@ -70,7 +87,6 @@ async function startEc2Instance(label, githubRegistrationToken) {
 
   // We don't want userdata/runner to be started. Our image has already a runner service started
   const userData = buildUserDataScript(githubRegistrationToken, label, true);
-  core.info('startEc2Instance called')
 
   var params;
   if (userData.length === 0) {
@@ -99,7 +115,6 @@ async function startEc2Instance(label, githubRegistrationToken) {
     };
   }
 
-  core.info('b4 calling runInstances');
   try {
     const result = await ec2.runInstances(params).promise();
     const ec2InstanceId = result.Instances[0].InstanceId;
