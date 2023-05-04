@@ -86,7 +86,8 @@ async function startEc2Instance(label, githubRegistrationToken) {
   const ec2 = new AWS.EC2();
 
   // We don't want userdata/runner to be started. Our image has already a runner service started
-  const userData = buildUserDataScript(githubRegistrationToken, label, true);
+  //const userData = buildUserDataScript(githubRegistrationToken, label, true);
+  const userData = buildUserDataScript(githubRegistrationToken, label);
 
   var params;
   if (userData.length === 0) {
