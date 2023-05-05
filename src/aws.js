@@ -109,6 +109,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
     userData = buildUserDataScript(githubRegistrationToken, label);
   }
 
+  core.info('userData = ' + userData)
   var params;
   if (userData.length === 0) {
     core.info('No UserData')
