@@ -86,10 +86,11 @@ async function startEc2Instance(label, githubRegistrationToken) {
   const ec2 = new AWS.EC2();
 
   // If label is provided, that means we don't want userdata/runner to be started with a random runner. But we need to make sure our image has already a runner service started with needed label
+  var userData;
   if (config.input.label) {
-    const userData = buildUserDataScript(githubRegistrationToken, label, true);
+    userData = buildUserDataScript(githubRegistrationToken, label, true);
   } else {
-    const userData = buildUserDataScript(githubRegistrationToken, label);
+    userData = buildUserDataScript(githubRegistrationToken, label);
   }
 
   var params;
