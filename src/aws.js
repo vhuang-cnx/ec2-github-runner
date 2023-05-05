@@ -45,7 +45,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
           './run.cmd',
           '</powershell>',
-          '<persist>false</persist>'
+          '<persist>true</persist>'
           ]
       } else {
         // If runner home directory is specified, we expect the actions-runner software (and dependencies)
@@ -64,7 +64,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
           './run.cmd',
           '</powershell>',
-          '<persist>false</persist>'
+          '<persist>true</persist>'
         ]
       } 
     } else {
@@ -75,7 +75,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
           './run.cmd',
           '</powershell>',
-          '<persist>false</persist>'
+          '<persist>true</persist>'
           ]
       } else {
         // If runner home directory is specified, we expect the actions-runner software (and dependencies)
@@ -88,7 +88,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
           './run.cmd',
           '</powershell>',
-          '<persist>false</persist>'
+          '<persist>true</persist>'
         ]
       } 
     }
