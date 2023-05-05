@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const core = require('@actions/core');
 const config = require('./config');
 
-const runnerVersion = '2.3.3.1'
+const runnerVersion = '2.304.0'
 
 // User data scripts are run as the root user
 function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
@@ -31,44 +31,45 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
 
   if (config.input.ec2Os === 'windows') {
     var userData;
-    if (config.input.eniId) {
-      // If here, we need to add ENI attachment
+    if (config.input.runnerHomeDir) {
       userData = [
         '<powershell>',
+        `cd "${config.input.runnerHomeDir}"`
+      ]
+    } else {
+      // If runner home directory is specified, we expect the actions-runner software (and dependencies)
+      // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
+      userData = [
+        '<powershell>',
+        'mkdir actions-runner; cd actions-runner',
+        `Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v${runnerVersion}/actions-runner-win-x64-${runnerVersion}.zip -OutFile actions-runner-win-x64-${runnerVersion}.zip`,
+        `Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-${runnerVersion}.zip", "$PWD")`
+      ]
+    }          
+
+    // We cannot attach ENI first because it will break 169.254.169.254 access
+    if (config.input.eniId) {
+      // If here, we need to add ENI attachment
+      return userData.concat( [
         'whoami > c:\\Users\\test.txt',
         `$instanceId = (invoke-webrequest http://169.254.169.254/latest/meta-data/instance-id -UseBasicParsing).content`,
         `$result = aws ec2 attach-network-interface --network-interface-id ${config.input.eniId} --instance-id $instanceId --device-index 1 | ConvertFrom-Json`,
         'echo $result.AttachmentId >> c:\\Users\\test.txt',
         '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "User")',
         '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "Machine")',
-      ]
-    } else {
-      userData = [
-        '<powershell>'
-      ]
-    }
-
-    if (config.input.runnerHomeDir) {
-      return userData.concat([
-        `cd "${config.input.runnerHomeDir}"`,
         `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
         './run.cmd',
         '</powershell>',
-        '<persist>false</persist>',
-      ])
-    } else {
-      // If runner home directory is specified, we expect the actions-runner software (and dependencies)
-      // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
-      return userData.concat( [
-        'mkdir actions-runner; cd actions-runner',
-        `Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v${runnerVersion}/actions-runner-win-x64-${runnerVersion}.zip -OutFile actions-runner-win-x64-${runnerVersion}.zip`,
-        `Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-${runnerVersion}.zip", "$PWD")`,
-        `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
-        './run.cmd',
-        '</powershell>',
-        '<persist>false</persist>',
+        '<persist>false</persist>'
       ] )
-    }      
+    } else {
+      return userData.concat( [
+        `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
+        './run.cmd',
+        '</powershell>',
+        '<persist>false</persist>'
+      ] )
+    }
   } else if (config.input.ec2Os === 'linux') {
     if (config.input.runnerHomeDir) {
       // If runner home directory is specified, we expect the actions-runner software (and dependencies)
