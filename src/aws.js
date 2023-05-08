@@ -44,8 +44,8 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "User")',
           '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "Machine")',
           `cd "${config.input.runnerHomeDir}"`,
-          `./config.cmd remove --token ${githubRegistrationToken}`,
-          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
+          `#./config.cmd remove --token ${githubRegistrationToken}`,
+          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended`,
           './run.cmd',
           '</powershell>',
           '<persist>true</persist>'
@@ -65,8 +65,8 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           'echo $result.AttachmentId > c:\\Users\\lic_attach_id.txt',
           '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "User")',
           '[Environment]::SetEnvironmentVariable("LIC_ATTACHMENT_ID",$result.AttachmentId, "Machine")',
-          `./config.cmd remove --token ${githubRegistrationToken}`,
-          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
+          `#./config.cmd remove --token ${githubRegistrationToken}`,
+          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended`,
           './run.cmd',
           '</powershell>',
           '<persist>true</persist>'
