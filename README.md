@@ -184,6 +184,7 @@ Use the following steps to prepare your workflow for running on your EC2 self-ho
 2. Use the documentation and example below to configure your workflow.
 3. Please don't forget to set up a job for removing the EC2 instance at the end of the workflow execution.
    Otherwise, the EC2 instance won't be removed and continue to run even after the workflow execution is finished.
+4. In this version, if you don't provide label, a new runner will be cretaed for you with a random label. For Windows EC2 instance, actions-runner will be configured to run as a service so that you can specify      which user the serive is running as instead of the default 'nt authority/system' account.
 
 Now you're ready to go!
 
@@ -202,6 +203,8 @@ Now you're ready to go!
 | `iam-role-name`                                                                                                                                                              | Optional. Used only with the `start` mode. | IAM role name to attach to the created EC2 runner. <br><br> This allows the runner to have permissions to run additional actions within the AWS account, without having to manage additional GitHub secrets and AWS users. <br><br> Setting this requires additional AWS permissions for the role launching the instance (see above). |
 | `aws-resource-tags`                                                                                                                                                          | Optional. Used only with the `start` mode. | Specifies tags to add to the EC2 instance and any attached storage. <br><br> This field is a stringified JSON array of tag objects, each containing a `Key` and `Value` field (see example below). <br><br> Setting this requires additional AWS permissions for the role launching the instance (see above).                         |
 | `runner-home-dir`                                                                                                                                                              | Optional. Used only with the `start` mode. | Specifies a directory where pre-installed actions-runner software and scripts are located.<br><br> |
+| `runner-runas`                                                                                                                                                              | Optional. Used only with the `start` mode. | Specifies the user you want the runner service to runas.<br><br> |
+| `runner-runas-cred`                                                                                                                                                              | Optional. Used only with the `start` mode. | The credential for the runas user.<br><br> |
 
 ### Environment variables
 
