@@ -16,6 +16,8 @@ class Config {
       eniId: core.getInput('eni-id'),
       iamRoleName: core.getInput('iam-role-name'),
       runnerHomeDir: core.getInput('runner-home-dir'),
+      runnerRunAs: core.getInput('runner-runas'),
+      runnerRunAsCred: core.getInput('runner-runas-cred'),
     };
 
     const tags = JSON.parse(core.getInput('aws-resource-tags'));
