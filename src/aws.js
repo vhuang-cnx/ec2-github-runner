@@ -47,7 +47,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           `./config.cmd remove --token ${githubRegistrationToken}`,
           `#./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended`,
           `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended  --name WIN-AWS-BUILD --runasservice --windowslogonaccount ${config.input.runnerRunAs} --windowslogonpassword ${config.input.runnerRunAsCred}`,
-          '#./run.cmd',
+          './run.cmd',
           '</powershell>',
           '<persist>true</persist>'
           ]
@@ -69,7 +69,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           `./config.cmd remove --token ${githubRegistrationToken}`,
           `#./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended`,
           `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended  --name WIN-AWS-BUILD --runasservice --windowslogonaccount ${config.input.runnerRunAs} --windowslogonpassword ${config.input.runnerRunAsCred}`,
-          '#./run.cmd',
+          './run.cmd',
           '</powershell>',
           '<persist>true</persist>'
         ]
