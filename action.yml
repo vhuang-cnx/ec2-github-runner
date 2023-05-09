@@ -76,6 +76,14 @@ inputs:
     description: >-
       Directory that contains actions-runner software and scripts. E.g. /home/runner/actions-runner.
     required: false
+  runner-runas:
+    description: >-
+      Specifies the user you want the runner service to runas. Windows OS only.
+    required: false
+  runner-runas-cred:
+    description: >-
+      The credential for the runas user. Windows OS only.
+    required: false        
 outputs:
   label:
     description: >-
