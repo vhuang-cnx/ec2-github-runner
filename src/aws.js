@@ -81,9 +81,11 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
         return [
           '<powershell>',
           `cd "${config.input.runnerHomeDir}"`,
-          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
-          './run.cmd',
-          '</powershell>',
+          `./config.cmd remove --token ${githubRegistrationToken}`,
+          `#./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended`,
+          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended  --name WIN-AWS-BUILD --runasservice --windowslogonaccount ${config.input.runnerRunAs} --windowslogonpassword ${config.input.runnerRunAsCred}`,
+          'Start-Service "actions.runner.*"',
+          '#./run.cmd',
           '<persist>true</persist>'
           ]
       } else {
@@ -94,8 +96,11 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
           'mkdir actions-runner; cd actions-runner',
           `Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v${runnerVersion}/actions-runner-win-x64-${runnerVersion}.zip -OutFile actions-runner-win-x64-${runnerVersion}.zip`,
           `Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-${runnerVersion}.zip", "$PWD")`,
-          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --unattended`,
-          './run.cmd',
+          `./config.cmd remove --token ${githubRegistrationToken}`,
+          `#./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended`,
+          `./config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended  --name WIN-AWS-BUILD --runasservice --windowslogonaccount ${config.input.runnerRunAs} --windowslogonpassword ${config.input.runnerRunAsCred}`,
+          'Start-Service "actions.runner.*"',
+          '#./run.cmd',
           '</powershell>',
           '<persist>true</persist>'
         ]
@@ -109,7 +114,8 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
         '#!/bin/bash',
         `cd "${config.input.runnerHomeDir}"`,
         'export RUNNER_ALLOW_RUNASROOT=1',
-        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}`,
+        `./config.sh remove --token ${githubRegistrationToken}`,
+        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-AWS-BUILD`,
         './run.sh',
       ];
     } else {
@@ -120,7 +126,8 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
         'curl -O -L https://github.com/actions/runner/releases/download/v2.286.0/actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
         'tar xzf ./actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
         'export RUNNER_ALLOW_RUNASROOT=1',
-        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}`,
+        `./config.sh remove --token ${githubRegistrationToken}`,
+        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-AWS-BUILD`,
         './run.sh',
       ];
     }
