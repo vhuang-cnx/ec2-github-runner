@@ -131,6 +131,31 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
         './run.sh',
       ];
     }
+  } else if (config.input.ec2Os === 'linuxRocky8') {
+    if (config.input.runnerHomeDir) {
+      // If runner home directory is specified, we expect the actions-runner software (and dependencies)
+      // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
+      return [
+        '#!/bin/bash',
+        `cd "${config.input.runnerHomeDir}"`,
+        'export RUNNER_ALLOW_RUNASROOT=1',
+        `./config.sh remove --token ${githubRegistrationToken}`,
+        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-ROCKY8-AWS-BUILD`,
+        './run.sh',
+      ];
+    } else {
+      return [
+        '#!/bin/bash',
+        'mkdir actions-runner && cd actions-runner',
+        'case $(uname -m) in aarch64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}',
+        'curl -O -L https://github.com/actions/runner/releases/download/v2.286.0/actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
+        'tar xzf ./actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
+        'export RUNNER_ALLOW_RUNASROOT=1',
+        `./config.sh remove --token ${githubRegistrationToken}`,
+        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-ROCKY8-AWS-BUILD`,
+        './run.sh',
+      ];
+    }
   } else {
     core.error('Not supported ec2-os.');
     return []
