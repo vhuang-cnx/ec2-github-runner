@@ -50,8 +50,8 @@ class Config {
       if (!this.input.ec2ImageId || !this.input.ec2InstanceType || !this.input.ec2Os || !this.input.subnetId || !this.input.securityGroupId) {
         throw new Error(`Not all the required inputs are provided for the 'start' mode`);
       }
-      if (this.input.ec2Os !== 'windows' && this.input.ec2Os !== 'linux') {
-        throw new Error(`Wrong ec2-os. Allowed values: windows or linux.`);
+      if (this.input.ec2Os !== 'windows' && this.input.ec2Os !== 'linux' && this.input.ec2Os !== 'linuxRocky8') {
+        throw new Error(`Wrong ec2-os. Allowed values: windows, linux or linuxRocky8.`);
       }
     } else if (this.input.mode === 'stop') {
       if (!this.input.label || !this.input.ec2InstanceId) {
