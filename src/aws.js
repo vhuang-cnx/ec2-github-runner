@@ -115,7 +115,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
         `cd "${config.input.runnerHomeDir}"`,
         'export RUNNER_ALLOW_RUNASROOT=1',
         `./config.sh remove --token ${githubRegistrationToken}`,
-        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-AWS-BUILD`,
+        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --disableupdate --name LX-AWS-BUILD`,
         './run.sh',
       ];
     } else {
@@ -127,7 +127,7 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
         'tar xzf ./actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
         'export RUNNER_ALLOW_RUNASROOT=1',
         `./config.sh remove --token ${githubRegistrationToken}`,
-        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-AWS-BUILD`,
+        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --disableupdate --name LX-AWS-BUILD`,
         './run.sh',
       ];
     }
