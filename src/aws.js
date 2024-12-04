@@ -121,13 +121,15 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
     } else {
       return [
         '#!/bin/bash',
+        'whoami >> /tmp/test.log',
         'mkdir actions-runner && cd actions-runner',
+        'pwd >> /tmp/test.log',
         'case $(uname -m) in aarch64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}',
-        'curl -O -L https://github.com/actions/runner/releases/download/v2.286.0/actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
-        'tar xzf ./actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
+        'curl -o actions-runner-linux-x64-2.321.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.321.0/actions-runner-linux-x64-2.321.0.tar.gz',
+        'tar xzf ./actions-runner-linux-x64-2.321.0.tar.gz',
         'export RUNNER_ALLOW_RUNASROOT=1',
         `./config.sh remove --token ${githubRegistrationToken}`,
-        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --disableupdate --name LX-AWS-BUILD`,
+        `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-ROCKY8-AWS-SCAN`,
         './run.sh',
       ];
     }
@@ -146,10 +148,12 @@ function buildUserDataScript(githubRegistrationToken, label, noRunner = false) {
     } else {
       return [
         '#!/bin/bash',
+        'whoami >> /tmp/test.log',
         'mkdir actions-runner && cd actions-runner',
+        'pwd >> /tmp/test.log',
         'case $(uname -m) in aarch64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}',
-        'curl -O -L https://github.com/actions/runner/releases/download/v2.286.0/actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
-        'tar xzf ./actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
+        'curl -o actions-runner-linux-x64-2.321.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.321.0/actions-runner-linux-x64-2.321.0.tar.gz',
+        'tar xzf ./actions-runner-linux-x64-2.321.0.tar.gz',
         'export RUNNER_ALLOW_RUNASROOT=1',
         `./config.sh remove --token ${githubRegistrationToken}`,
         `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --replace --unattended --name LX-ROCKY8-AWS-BUILD`,
